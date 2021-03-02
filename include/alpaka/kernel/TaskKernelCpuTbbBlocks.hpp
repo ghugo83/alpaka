@@ -40,6 +40,9 @@
 #    include <tbb/parallel_for.h>
 #    include <tbb/task_group.h>
 
+
+#include <tbb/task_scheduler_init.h>
+
 namespace alpaka
 {
     //#############################################################################
@@ -107,9 +110,13 @@ namespace alpaka
             TIdx const numBlocksInGrid(gridBlockExtent.prod());
 
             if(blockThreadExtent.prod() != static_cast<TIdx>(1u))
-            {
+	      {
                 throw std::runtime_error("A block for the TBB accelerator can only ever have one single thread!");
-            }
+	      }
+
+	    //std::cout << "tbb::task_scheduler_init::default_num_threads() = " << tbb::task_scheduler_init::default_num_threads() << std::endl;
+
+	    tbb::task_scheduler_init init(15);
 
             tbb::parallel_for(static_cast<TIdx>(0), static_cast<TIdx>(numBlocksInGrid), [&](TIdx i) {
                 AccCpuTbbBlocks<TDim, TIdx> acc(

@@ -60,7 +60,8 @@ namespace alpaka
         public gb::IdxGbRef<TDim, TIdx>,
         public bt::IdxBtZero<TDim, TIdx>,
         public AtomicHierarchy<
-            AtomicStdLibLock<16>, // grid atomics
+      //AtomicStdLibLock<16>, // grid atomics
+      AtomicNoOp,
             AtomicNoOp,        // block atomics
             AtomicNoOp         // thread atomics
         >,
@@ -91,7 +92,8 @@ namespace alpaka
             , gb::IdxGbRef<TDim, TIdx>(m_gridBlockIdx)
             , bt::IdxBtZero<TDim, TIdx>()
             , AtomicHierarchy<
-                  AtomicStdLibLock<16>, // atomics between grids
+                  //AtomicStdLibLock<16>, // atomics between grids
+                  AtomicNoOp,
                   AtomicNoOp, // atomics between blocks
                   AtomicNoOp // atomics between threads
                   >()

@@ -46,7 +46,9 @@ namespace alpaka
         //-----------------------------------------------------------------------------
         template<typename TWorkDiv>
         ALPAKA_FN_HOST TaskKernelCpuSerial(TWorkDiv&& workDiv, TKernelFnObj const& kernelFnObj, TArgs&&... args)
-            : WorkDivMembers<TDim, TIdx>(std::forward<TWorkDiv>(workDiv))
+	  : WorkDivMembers<TDim, TIdx>(std::forward<TWorkDiv>(workDiv))
+	  //, m_cheatWorkDiv(workDiv)
+	  //: WorkDivMembers<TDim, TIdx>(std::move(workDiv))
             , m_kernelFnObj(kernelFnObj)
             , m_args(std::forward<TArgs>(args)...)
         {
@@ -99,8 +101,9 @@ namespace alpaka
                 m_args));
 
             AccCpuSerial<TDim, TIdx> acc(
-                *static_cast<WorkDivMembers<TDim, TIdx> const*>(this),
-                blockSharedMemDynSizeBytes);
+					 *static_cast<WorkDivMembers<TDim, TIdx> const*>(this),
+					 blockSharedMemDynSizeBytes);
+	    /*AccCpuSerial<TDim, TIdx> acc(WorkDivMembers<TDim, TIdx>(gridBlockExtent, blockThreadExtent, threadElemExtent), blockSharedMemDynSizeBytes);*/
 
             if(blockThreadExtent.prod() != static_cast<TIdx>(1u))
             {
@@ -118,7 +121,11 @@ namespace alpaka
             });
         }
 
+	//Vec<TDim, TIdx> getCheatWorkDiv() const { return m_cheatWorkDiv.m_threadElemExtent; }
+
     private:
+
+	//WorkDivMembers<TDim, TIdx> m_cheatWorkDiv;
         TKernelFnObj m_kernelFnObj;
         std::tuple<std::decay_t<TArgs>...> m_args;
     };

@@ -44,6 +44,11 @@
 
 namespace alpaka
 {
+  //uint32_t testExtern = 1u;  // MEDIUM
+  //thread_local uint32_t testExtern = 1u;  // MEDIUM
+  //extern thread_local uint32_t testExtern = 1u;  // MEDIUM
+  //const uint32_t testExtern = 1u;  // GOOD
+
     template<typename TDim, typename TIdx, typename TKernelFnObj, typename... TArgs>
     class TaskKernelCpuSerial;
 
@@ -84,11 +89,12 @@ namespace alpaka
         template<typename TDim2, typename TIdx2, typename TKernelFnObj, typename... TArgs>
         friend class ::alpaka::TaskKernelCpuSerial;
 
-    private:
+	//private:
+    public:
         //-----------------------------------------------------------------------------
         template<typename TWorkDiv>
         ALPAKA_FN_HOST AccCpuSerial(TWorkDiv const& workDiv, size_t const& blockSharedMemDynSizeBytes)
-            : WorkDivMembers<TDim, TIdx>(workDiv)
+	  : WorkDivMembers<TDim, TIdx>(workDiv)
             , gb::IdxGbRef<TDim, TIdx>(m_gridBlockIdx)
             , bt::IdxBtZero<TDim, TIdx>()
             , AtomicHierarchy<
@@ -104,6 +110,7 @@ namespace alpaka
             , rand::RandStdLib()
             , TimeStdLib()
             , m_gridBlockIdx(Vec<TDim, TIdx>::zeros())
+	  //, m_cheatWorkDiv(std::move(workDiv))
         {
         }
 
@@ -119,9 +126,21 @@ namespace alpaka
         //-----------------------------------------------------------------------------
         /*virtual*/ ~AccCpuSerial() = default;
 
+	/*ALPAKA_FN_INLINE const Vec<TDim, TIdx> __attribute__((always_inline)) getCaca() const {
+	  //return m_cheatWorkDiv.m_threadElemExtent; // BAD
+	  //return m_cheatWorkDiv;  // BAD
+	  //uint32_t testExtern = 1u;  // GOOD
+	  //return Vec<TDim, TIdx>::all(1u);  // GOOD
+	  return Vec<TDim, TIdx>::all(testExtern);
+	  }*/
+
     private:
         // getIdx
         Vec<TDim, TIdx> mutable m_gridBlockIdx; //!< The index of the currently executed block.
+
+	//WorkDivMembers<TDim, TIdx> m_cheatWorkDiv;
+	//Vec<TDim, TIdx>	m_cheatWorkDiv = Vec<TDim, TIdx>::all(1u);
+	//uint32_t testExtern = 1u; // MEDIUM
     };
 
     namespace traits

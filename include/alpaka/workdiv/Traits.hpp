@@ -81,8 +81,12 @@ namespace alpaka
             ALPAKA_NO_HOST_ACC_WARNING
             ALPAKA_FN_HOST_ACC static auto getWorkDiv(TWorkDiv const& workDiv)
             {
-                return alpaka::getWorkDiv<origin::Block, unit::Threads>(workDiv)
-                    * alpaka::getWorkDiv<origin::Thread, unit::Elems>(workDiv);
+	      //std::cout << "Called Traits getWorkDiv, origin::Block, unit::Elems" << std::endl;
+	      return alpaka::getWorkDiv<origin::Block, unit::Threads>(workDiv)
+	         * alpaka::getWorkDiv<origin::Thread, unit::Elems>(workDiv);  // BAD
+	      //return 1u; // GOOD
+	      //return Vec<Dim<TWorkDiv>, Idx<TWorkDiv>>::all(1u); // GOOD
+	      //return Vec<Dim<TWorkDiv>, Idx<TWorkDiv>>::all(1u) * Vec<Dim<TWorkDiv>, Idx<TWorkDiv>>::all(1u); // GOOD
             }
         };
     } // namespace traits

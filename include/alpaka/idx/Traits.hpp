@@ -14,6 +14,10 @@
 
 namespace alpaka
 {
+
+  //uint32_t testExtern = 1u;  // MEDIUM
+
+
     struct ConceptIdxBt
     {
     };
